@@ -36,6 +36,11 @@ def sites():
                 site = {}
                 site['id'] = row[0]
                 site['name'] = row[1]
+                with conn.cursor() as cur_inner:
+                    cur_inner.execute("select url_check.created_at from url_check join urls on url_check.url_id=urls.id where urls.id=%s order by created_at desc limit 1", (site['id'],))
+                    data = cur_inner.fetchone()
+                    if data:
+                        site['last_check'] = data[0]
                 sites.append(site)
         return render_template('sites.html', sites=sites)
     
@@ -70,4 +75,21 @@ def site_detail(id):
         site['id'] = data[0]
         site['name'] = data[1]
         site['created_at'] = data[2]
-    return render_template('site_detail.html', site=site)
+    with conn.cursor() as cur:
+        cur.execute("SELECT id, created_at from url_check where url_id = %s order by created_at desc", (id,))
+        checks = []
+        for row in cur.fetchall():
+            check = {}
+            check['id'] = row[0]
+            check['created_at'] = row[1]
+            checks.append(check)
+    return render_template('site_detail.html', site=site, checks=checks)
+
+@app.route('/urls/<id>/checks', methods = ['POST'])
+def check_site(id):
+    url_id = id
+    created_at = datetime.datetime.now()
+    with conn.cursor() as cur:
+        cur.execute("insert into url_check (url_id, created_at) values (%(url_id)s, %(date)s)", {'url_id': url_id, 'date': created_at})
+        conn.commit()
+    return redirect(url_for('site_detail', id=id))
