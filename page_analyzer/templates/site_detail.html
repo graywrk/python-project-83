@@ -45,9 +45,9 @@
                     <tr>
                         <td>{{ check.id }}</td>
                         <td>{% if check.status_code is not none %}{{ check.status_code }}{% endif %}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{% if check.h1 is not none %}{{ check.h1 }}{% endif %}</td>
+                        <td>{% if check.title is not none %}{{ check.title }}{% endif %}</td>
+                        <td>{% if check.description is not none %}{{ check.description }}{% endif %}</td>
                         <td>{{ check.created_at.strftime('%Y-%m-%d') }}</td>
                     </tr>
                 {% endfor %}

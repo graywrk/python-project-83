@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 import os, sys, datetime
 import psycopg2
 import requests
+from bs4 import BeautifulSoup
 
 load_dotenv()
 
@@ -78,13 +79,16 @@ def site_detail(id):
         site['name'] = data[1]
         site['created_at'] = data[2]
     with conn.cursor() as cur:
-        cur.execute("SELECT id, created_at, status_code from url_check where url_id = %s order by created_at desc", (id,))
+        cur.execute("SELECT id, created_at, status_code, h1, title, description from url_check where url_id = %s order by created_at desc", (id,))
         checks = []
         for row in cur.fetchall():
             check = {}
             check['id'] = row[0]
             check['created_at'] = row[1]
             check['status_code'] = row[2]
+            check['h1'] = row[3]
+            check['title'] = row[4]
+            check['description'] = row[5]
             checks.append(check)
     return render_template('site_detail.html', site=site, checks=checks)
 
@@ -98,10 +102,24 @@ def check_site(id):
     try:
         r = requests.get(url)
         status_code = r.status_code
+        soup = BeautifulSoup(r.content, 'html.parser')
+        h1_list = soup.select('h1')
+        if h1_list:
+            h1 = h1_list[0].text.strip()
+        else:
+            h1 = ''
+        title_list = soup.select('title')
+        if title_list:
+            title = title_list[0].text.strip()
+        else:
+            title = ''
+        description = soup.find('meta', { 'name':'description' }).get('content').strip()
+        
     except:
         flash('Произошла ошибка при проверке')
         return redirect(url_for('site_detail', id=id))
+
     with conn.cursor() as cur:
-        cur.execute("insert into url_check (url_id, created_at, status_code) values (%(url_id)s, %(date)s, %(status_code)s)", {'url_id': url_id, 'date': created_at, 'status_code': status_code})
+        cur.execute("insert into url_check (url_id, created_at, status_code, h1, title, description) values (%(url_id)s, %(date)s, %(status_code)s, %(h1)s, %(title)s, %(description)s)", {'url_id': url_id, 'date': created_at, 'status_code': status_code, 'h1': h1, 'title': title, 'description': description})
         conn.commit()
     return redirect(url_for('site_detail', id=id))
