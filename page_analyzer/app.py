@@ -30,7 +30,7 @@ def index():
 def sites():
     if request.method == "GET":
         with conn.cursor() as cur:
-            cur.execute("SELECT id, name from urls")
+            cur.execute("SELECT id, name from urls order by created_at desc")
             sites = []
             for row in cur.fetchall():
                 site = {}
