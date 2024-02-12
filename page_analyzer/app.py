@@ -122,4 +122,5 @@ def check_site(id):
     with conn.cursor() as cur:
         cur.execute("insert into url_check (url_id, created_at, status_code, h1, title, description) values (%(url_id)s, %(date)s, %(status_code)s, %(h1)s, %(title)s, %(description)s)", {'url_id': url_id, 'date': created_at, 'status_code': status_code, 'h1': h1, 'title': title, 'description': description})
         conn.commit()
+    flash("Страница успешно проверена")
     return redirect(url_for('site_detail', id=id))
