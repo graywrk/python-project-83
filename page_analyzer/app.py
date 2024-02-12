@@ -2,8 +2,6 @@ from flask import (
     Flask,
     render_template,
     flash,
-    get_flashed_messages,
-    make_response,
     redirect,
     request,
     url_for,
@@ -11,7 +9,8 @@ from flask import (
 from dotenv import load_dotenv
 from .validator import validate
 from urllib.parse import urlparse
-import os, sys, datetime
+import os
+import datetime
 import psycopg2
 import requests
 from bs4 import BeautifulSoup
@@ -24,9 +23,11 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 DATABASE_URL = os.getenv('DATABASE_URL')
 conn = psycopg2.connect(DATABASE_URL)
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/urls', methods=['GET', 'POST'])
 def sites():
