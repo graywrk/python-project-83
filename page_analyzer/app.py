@@ -9,7 +9,7 @@ from flask import (
     url_for,
 )
 from dotenv import load_dotenv
-form validator import validate
+from .validator import validate
 import os
 import psycopg2
 import datetime
