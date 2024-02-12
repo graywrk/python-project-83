@@ -12,6 +12,7 @@ gunicorn = "^21.2.0"
 pydantic-settings = "^2.1.0"
 psycopg2 = "^2.9.9"
 validators = "^0.22.0"
+requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"

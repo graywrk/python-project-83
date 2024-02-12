@@ -44,7 +44,7 @@
                 {% for check in checks %}
                     <tr>
                         <td>{{ check.id }}</td>
-                        <td></td>
+                        <td>{% if check.status_code is not none %}{{ check.status_code }}{% endif %}</td>
                         <td></td>
                         <td></td>
                         <td></td>

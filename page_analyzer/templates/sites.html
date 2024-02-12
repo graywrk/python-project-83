@@ -18,7 +18,7 @@
                 <td>{{ site.id }}</td>
                 <td><a href="/urls/{{ site.id }}">{{ site.name }}</a></td>
                 <td>{% if site.last_check is defined %}{{ site.last_check.strftime('%Y-%m-%d') }}{% endif %}</td>
-                <td></td>
+                <td>{% if site.status_code is not none %}{{ site.status_code }}{% endif %}</td>
             </tr>
         {% endfor %}
         </tbody>
