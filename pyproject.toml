@@ -1,6 +1,6 @@
 [tool.poetry]
-# name = "hexlet-code"
-name = "page_analyzer"
+name = "hexlet-code"
+packages = [  { include = "page_analyzer" },]
 version = "0.1.0"
 description = ""
 authors = ["Sergei Dmitriev <graywrk@gmail.com>"]
