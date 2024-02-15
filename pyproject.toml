@@ -10,11 +10,10 @@ python = "^3.10"
 Flask = "^3.0.2"
 gunicorn = "^20.1.0"
 pydantic-settings = "^2.1.0"
-psycopg2 = "^2.9.9"
 validators = "^0.22.0"
 requests = "^2.31.0"
 bs4 = "^0.0.2"
-psycopg-binary = "^3.1.18"
+psycopg2-binary = "^2.9.9"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"
