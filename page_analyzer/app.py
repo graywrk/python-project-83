@@ -54,7 +54,7 @@ def sites():
         errors = validate(url)
         if errors:
             flash(errors, 'error')
-            return redirect(url_for('index'))
+            return render_template('index.html'), 422
         else:
             url = urlparse(url)
             name = url.scheme + "://" + url.netloc # normalize name
