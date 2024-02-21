@@ -1,5 +1,6 @@
 import validators
 
+
 def validate(name):
     errors = ''
     if len(name) == 0:

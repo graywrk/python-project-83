@@ -48,7 +48,7 @@ def sites():
                 sites.append(site)
         conn.close()
         return render_template('sites.html', sites=sites)
-    
+
     if request.method == "POST":
         url = request.form.to_dict()['url']
         errors = validate(url)
@@ -57,7 +57,7 @@ def sites():
             return render_template('index.html'), 422
         else:
             url = urlparse(url)
-            name = url.scheme + "://" + url.netloc # normalize name
+            name = url.scheme + "://" + url.netloc  # normalize name
             conn = psycopg2.connect(DATABASE_URL)
             with conn.cursor() as cur:
                 cur.execute("select id from urls where name = %s", (name,))
@@ -72,6 +72,7 @@ def sites():
                     flash('Страница уже существует')
             conn.close()
             return redirect(url_for('site_detail', id=id))
+
 
 @app.route('/urls/<id>')
 def site_detail(id):
@@ -98,7 +99,8 @@ def site_detail(id):
     conn.close()
     return render_template('site_detail.html', site=site, checks=checks)
 
-@app.route('/urls/<id>/checks', methods = ['POST'])
+
+@app.route('/urls/<id>/checks', methods=['POST'])
 def check_site(id):
     url_id = id
     created_at = datetime.datetime.now()
@@ -113,12 +115,12 @@ def check_site(id):
         flash('Произошла ошибка при проверке')
         conn.close()
         return redirect(url_for('site_detail', id=id))
- 
+
     if status_code != 200:
         flash('Произошла ошибка при проверке')
         conn.close()
-        return redirect(url_for('site_detail', id=id)) 
- 
+        return redirect(url_for('site_detail', id=id))
+
     soup = BeautifulSoup(r.content, 'html.parser')
     h1_list = soup.select('h1')
     if h1_list:
@@ -130,8 +132,8 @@ def check_site(id):
         title = title_list[0].text.strip()
     else:
         title = ''
-    description = soup.find('meta', { 'name':'description' }).get('content').strip()
-        
+    description = soup.find('meta', {'name': 'description'}).get('content').strip()
+
     with conn.cursor() as cur:
         cur.execute("insert into url_check (url_id, created_at, status_code, h1, title, description) values (%(url_id)s, %(date)s, %(status_code)s, %(h1)s, %(title)s, %(description)s)", {'url_id': url_id, 'date': created_at, 'status_code': status_code, 'h1': h1, 'title': title, 'description': description})
         conn.commit()
