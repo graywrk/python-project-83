@@ -111,7 +111,7 @@ def check_site(id):
     try:
         r = requests.get(url)
         status_code = r.status_code
-    except:
+    except requests.exceptions.RequestException:
         flash('Произошла ошибка при проверке')
         conn.close()
         return redirect(url_for('site_detail', id=id))
