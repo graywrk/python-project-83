@@ -109,24 +109,29 @@ def check_site(id):
     try:
         r = requests.get(url)
         status_code = r.status_code
-        soup = BeautifulSoup(r.content, 'html.parser')
-        h1_list = soup.select('h1')
-        if h1_list:
-            h1 = h1_list[0].text.strip()
-        else:
-            h1 = ''
-        title_list = soup.select('title')
-        if title_list:
-            title = title_list[0].text.strip()
-        else:
-            title = ''
-        description = soup.find('meta', { 'name':'description' }).get('content').strip()
-        
     except:
         flash('Произошла ошибка при проверке')
         conn.close()
         return redirect(url_for('site_detail', id=id))
-
+ 
+    if status_code != 200:
+        flash('Произошла ошибка при проверке')
+        conn.close()
+        return redirect(url_for('site_detail', id=id)) 
+ 
+    soup = BeautifulSoup(r.content, 'html.parser')
+    h1_list = soup.select('h1')
+    if h1_list:
+        h1 = h1_list[0].text.strip()
+    else:
+        h1 = ''
+    title_list = soup.select('title')
+    if title_list:
+        title = title_list[0].text.strip()
+    else:
+        title = ''
+    description = soup.find('meta', { 'name':'description' }).get('content').strip()
+        
     with conn.cursor() as cur:
         cur.execute("insert into url_check (url_id, created_at, status_code, h1, title, description) values (%(url_id)s, %(date)s, %(status_code)s, %(h1)s, %(title)s, %(description)s)", {'url_id': url_id, 'date': created_at, 'status_code': status_code, 'h1': h1, 'title': title, 'description': description})
         conn.commit()
